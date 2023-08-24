@@ -1,5 +1,5 @@
 # backyard_lite
-弔图存档lite，访问主页[（链接）](https://umas2022.github.io)
+弔图存档lite，访问主页[（链接）](https://umas2022.github.io/backyard/)
 
 
 ### 简介
