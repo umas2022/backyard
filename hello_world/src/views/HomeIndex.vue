@@ -65,7 +65,6 @@ const btn_navi_ctrl = () => {
   show_navi.value = !show_navi.value
   const navi_box = document.querySelector(".body-navi");
   (navi_box as HTMLElement).style.marginTop = '30px';
-  // margin-top: 30px;
 }
 
 

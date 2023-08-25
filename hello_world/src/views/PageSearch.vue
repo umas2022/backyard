@@ -10,7 +10,7 @@
                 <img v-else class="shake-crazy" style="width: 30%;" src="static/home.jpg" alt="">
             </div>
             <div class="input-box">
-                
+
                 <div id="search" :class="res_list.length == 1 ? 'search-input' : 'search-res'">
                     <el-input placeholder="搜tag" v-model="search_input"></el-input>
                     <el-button class="shake-little" type="primary" @click="search_tag">搜索</el-button>
@@ -70,6 +70,15 @@ import PageShow from "./PageShow.vue"
 import { ElMessage } from "element-plus"
 
 
+// 初始化搜索栏换行
+onMounted(() => {
+    if (store.state.setval.ishandy) {
+        const navi_box = document.querySelector(".input-box");
+        (navi_box as HTMLElement).style.display = 'block';
+    }
+})
+
+
 
 // 搜索输入
 const search_input = ref("")
@@ -82,10 +91,9 @@ const add_search_list = (show_list: { title: string, list: string[], path: strin
     return show_list
 }
 
+
 // 搜索记录列表
 const res_list = ref<{ title: string, list: string[], path: string[] }[]>([])
-
-
 onMounted(() => {
     res_list.value = []
     res_list.value[0] = { title: "搜索结果", list: [], path: [] }
@@ -205,21 +213,17 @@ div.search-box .input-box {
     display: flex;
     border-radius: 5px;
     margin: 5px 0 5px 0;
+    text-align: center;
 
     #search {
         border: solid 3px black;
         border-radius: 5px;
         padding: 5px;
-        display: inline-block;
         margin-right: 10px;
-
-
-
+        width: 100%;
     }
 
     .search-input {
-        width: calc(100% - 190px);
-
         .el-input {
             width: calc(100% - 60px);
         }
@@ -238,6 +242,12 @@ div.search-box .input-box {
         border-radius: 5px;
         padding: 5px;
         display: flex;
+        text-align: center;
+        width: 100%;
+
+        .el-button {
+            margin: 0 auto;
+        }
     }
 }
 
