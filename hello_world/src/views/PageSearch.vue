@@ -6,19 +6,23 @@
             <!-- <el-button type="danger" @click=test_button> test</el-button> -->
 
             <div class="img-box " v-if="res_list.length == 1">
-                <img class="shake-crazy" style="width: 30%;" src="static/home.jpg" alt="">
+                <img v-if="store.state.setval.ishandy" class="shake-crazy" style="width: 60%;" src="static/home.jpg" alt="">
+                <img v-else class="shake-crazy" style="width: 30%;" src="static/home.jpg" alt="">
             </div>
             <div class="input-box">
-                <div id="go" v-if="res_list.length == 1">
-                    <el-button class="shake-little" type="warning" @click="go_image">看图</el-button>
-                    <el-button class="shake-little" type="warning" @click="go_video">视频</el-button>
-                    <el-button class="shake-little" type="warning" @click="go_sticker">表情</el-button>
-                </div>
+                
                 <div id="search" :class="res_list.length == 1 ? 'search-input' : 'search-res'">
                     <el-input placeholder="搜tag" v-model="search_input"></el-input>
                     <el-button class="shake-little" type="primary" @click="search_tag">搜索</el-button>
                     <el-button @click="search_back" v-if="res_list.length > 1">返回</el-button>
                 </div>
+
+                <div id="go" v-if="res_list.length == 1">
+                    <el-button class="shake-little" type="warning" @click="go_image">看图</el-button>
+                    <el-button class="shake-little" type="warning" @click="go_video">视频</el-button>
+                    <el-button class="shake-little" type="warning" @click="go_sticker">表情</el-button>
+                </div>
+
 
             </div>
 
@@ -31,7 +35,7 @@
 
             <!-- 显示搜索结果 -->
             <div class="res-box" v-if="res_list.length > 1">
-                <PageShow :hide_button="true"/>
+                <PageShow :hide_button="true" />
             </div>
         </div>
 
@@ -111,7 +115,7 @@ const search_tag = () => {
 
 
 // 搜索结果回退
-const search_back=()=>{
+const search_back = () => {
     res_list.value.pop()
     store.commit("set_list", res_list.value[res_list.value.length - 1])
 }
@@ -199,8 +203,6 @@ div.search-box .input-box {
     width: calc(30% + 220px);
     padding: 5px;
     display: flex;
-    flex-direction: row-reverse;
-    // border: solid 3px red;
     border-radius: 5px;
     margin: 5px 0 5px 0;
 
@@ -235,8 +237,7 @@ div.search-box .input-box {
         border: solid 3px black;
         border-radius: 5px;
         padding: 5px;
-        width: 255px;
-        display: inline-block;
+        display: flex;
     }
 }
 

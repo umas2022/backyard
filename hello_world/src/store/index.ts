@@ -22,7 +22,8 @@ export default createStore({
       right_navi: false,
       // 开发模式
       isdev: false,
-      // isdev: true,
+      // 竖屏模式
+      ishandy:false
     } as { [key: string]: any },
 
   },

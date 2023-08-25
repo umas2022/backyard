@@ -11,7 +11,12 @@
     </div>
 
     <!-- 左侧导航 -->
-    <div class="body-navi">
+    <div class="navi-ctrl" v-if="store.state.setval.ishandy">
+      <el-button @click="btn_navi_ctrl">
+        <el-icon><Menu /></el-icon>
+      </el-button>
+    </div>
+    <div class="body-navi" v-show="!store.state.setval.ishandy || show_navi">
       <HomeNavi />
     </div>
 
@@ -52,6 +57,16 @@ const router = useRouter();
 
 // 背景图片
 const bg_path = "background/pattern-" + Math.ceil(Math.random() * 33) + ".svg"
+
+
+// 手机模式下的左侧导航控制
+const show_navi = ref(false)
+const btn_navi_ctrl = () => {
+  show_navi.value = !show_navi.value
+  const navi_box = document.querySelector(".body-navi");
+  (navi_box as HTMLElement).style.marginTop = '30px';
+  // margin-top: 30px;
+}
 
 
 // 右侧tag导航展开时的宽度控制
@@ -103,9 +118,9 @@ const get_list = async (url_list: string, url_store: string, index_ref: Ref<stri
 }
 
 
-onMounted(() => {
 
-  // 获取远程资源
+// 获取远程资源
+onMounted(() => {
   get_list(url_image_list, url_image, image_index, image_urls)
   get_list(url_sticker_list, url_sticker, sticker_index, sticker_urls)
   get_list(url_video_list, url_video, video_index, video_urls)
@@ -123,6 +138,18 @@ onMounted(() => {
   get_index(url_tag_list, tag_index)
   get_index(url_update_list, update_index)
 })
+
+
+
+// 初始化图片宽度
+onMounted(() => {
+  console.log(window.innerWidth)
+  if (window.innerWidth < 1000) {
+    store.commit("set_set", { key: "ishandy", value: true })
+    store.commit("set_set", { key: "pic_width", value: 90 })
+  }
+})
+
 
 // test按钮
 const test_button = () => {
@@ -165,22 +192,24 @@ div.home {
 }
 
 // 左侧导航
+div.navi-ctrl {
+  position: absolute;
+  z-index: 99;
+  right: 10px;
+  left: 18px;
+}
+
 div.body-navi {
   height: auto;
 }
 
-// 左侧导航展开宽度，另外需要改变HomeNavi.vue, div.navi-box:hover
-div.body-navi:hover~div.body-center {
-  margin-left: 400px;
-}
 
 div.body-center {
-  width: calc(100vw - 95px);
+  width: 100%;
+  // width: calc(100vw - 95px);
   height: calc(100vh - 20px);
   display: flex;
   flex-direction: row;
-  position: absolute;
-  margin-left: 80px;
   transition: 0.3s ease-in-out;
 
   // loading页

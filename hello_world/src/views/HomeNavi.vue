@@ -132,11 +132,21 @@
                     <div class="navi-each"> by:umas </div>
                     <div class="navi-each">visit: <a href="https://github.com/umas2022/umas2022.github.io">GitHub</a>
                     </div>
-                    <div class="navi-each"> <li>左右方向键可以控制翻页</li>  </div>
-                    <div class="navi-each"> <li>找不到tag？可以ctrl+F直接搜网页</li>  </div>
-                    <div class="navi-each"> <li>直接搜索空字符串会返回所有表情包</li> </div>
-                    <div class="navi-each"> <li>支持在结果中继续搜索</li> </div>
-                    <div class="navi-each"> <li>（没有做竖屏适配）</li> </div>
+                    <div class="navi-each">
+                        <li>左右方向键可以控制翻页</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>找不到tag？可以ctrl+F直接搜网页</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>直接搜索空字符串会返回所有表情包</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>支持在结果中继续搜索</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>（没有做竖屏适配）</li>
+                    </div>
                 </div>
             </el-scrollbar>
         </div>
@@ -163,7 +173,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, inject, computed } from "vue"
+import { ref, inject, computed, onMounted } from "vue"
 import type { Ref } from "vue"
 import { useStore } from "vuex";
 const store = useStore();
@@ -230,6 +240,8 @@ const slider_pic_width = () => {
 
 
 
+
+
 // 测试按钮
 const test_button = () => {
     console.log(image_urls)
@@ -259,7 +271,7 @@ div.navi-box {
 }
 
 
-// 左侧导航展开宽度，另外需要改变HomeIndex.vue, div.body-navi:hover~div.body-center 
+// 左侧导航展开宽度
 div.navi-box:hover {
     width: 400px;
     border: solid 2px rgba(0, 0, 0, 0.7);
@@ -400,5 +412,4 @@ div.calen-box:hover {
 
 div.calen-icon {
     padding: 4px 0px 0px 4px;
-}
-</style>
+}</style>
