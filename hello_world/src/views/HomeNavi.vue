@@ -136,16 +136,22 @@
                         <li>左右方向键可以控制翻页</li>
                     </div>
                     <div class="navi-each">
-                        <li>找不到tag？可以ctrl+F直接搜网页</li>
+                        <li>肉眼找不到tag可以ctrl+F直接搜网页</li>
                     </div>
                     <div class="navi-each">
                         <li>直接搜索空字符串会返回所有表情包</li>
                     </div>
                     <div class="navi-each">
-                        <li>支持在结果中继续搜索</li>
+                        <li>支持在结果中继续搜索，但目前好像有bug但懒得修了</li>
                     </div>
                     <div class="navi-each">
                         <li>（没有做竖屏适配）</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>（超过一个月没更新的话可以去微信摇我一下）</li>
+                    </div>
+                    <div class="navi-each">
+                        <li>（↑摇不到的话大抵是人无了，欢迎来捡金币）</li>
                     </div>
                 </div>
             </el-scrollbar>
