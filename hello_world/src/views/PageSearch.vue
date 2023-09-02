@@ -247,6 +247,7 @@ div.search-box .input-box {
 
         .el-button {
             margin: 0 auto;
+            width: 30%;
         }
     }
 }
