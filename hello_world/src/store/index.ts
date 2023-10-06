@@ -4,6 +4,8 @@ export default createStore({
   state: {
     // 当前显示的图片列表
     show_list: {} as { [key: string]: any },
+    // 搜索框输入的tag
+    target_tag:"",
 
     // 右侧tag导航赋值
     tag_navi: "",

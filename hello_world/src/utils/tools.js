@@ -8,7 +8,7 @@
 import { legal_image,legal_video } from "./const.js"
 
 /**
- * 序号转换为pack名
+ * 序号转换为pack名：1 => pack0001
  * @param {number} num 
  * @returns 
  */

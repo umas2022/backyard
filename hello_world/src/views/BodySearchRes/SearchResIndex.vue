@@ -5,10 +5,11 @@
 
             <!-- <el-button type="danger" @click=test_button> test</el-button> -->
 
-            <div class="img-box " v-if="res_list.length == 1">
-                <img v-if="store.state.setval.ishandy" class="shake-crazy" style="width: 60%;" src="static/home.jpg" alt="">
-                <img v-else class="shake-crazy" style="width: 30%;" src="static/home.jpg" alt="">
+            <div class="header" style="width: 70%;">
+                <h3 style="word-wrap: break-word;">{{'当前搜索：' +  input_record }}</h3>
+                
             </div>
+
             <div class="input-box">
 
                 <div id="search" :class="res_list.length == 1 ? 'search-input' : 'search-res'">
@@ -16,13 +17,6 @@
                     <el-button class="shake-little" type="primary" @click="search_tag">搜索</el-button>
                     <el-button @click="search_back" v-if="res_list.length > 1">返回</el-button>
                 </div>
-
-                <div id="go" v-if="res_list.length == 1">
-                    <el-button class="shake-little" type="warning" @click="go_image">看图</el-button>
-                    <el-button class="shake-little" type="warning" @click="go_video">视频</el-button>
-                    <el-button class="shake-little" type="warning" @click="go_sticker">表情</el-button>
-                </div>
-
 
             </div>
 
@@ -70,7 +64,7 @@ import PageShow from "./PageShow.vue"
 import { ElMessage } from "element-plus"
 
 
-// 初始化搜索栏换行
+// 初始化【宽屏/竖屏】搜索栏换行
 onMounted(() => {
     if (store.state.setval.ishandy) {
         const navi_box = document.querySelector(".input-box");
@@ -80,7 +74,7 @@ onMounted(() => {
 
 
 
-// 搜索输入
+// 搜索框输入
 const search_input = ref("")
 
 
@@ -91,6 +85,8 @@ const add_search_list = (show_list: { title: string, list: string[], path: strin
     return show_list
 }
 
+// 输入的tag列表
+const input_record:Ref<Array<string>> = ref([])
 
 // 搜索记录列表
 const res_list = ref<{ title: string, list: string[], path: string[] }[]>([])
@@ -102,11 +98,21 @@ onMounted(() => {
             res_list.value[0] = add_search_list(res_list.value[0], pack, sticker_urls.value[pack][id])
         }
     }
+    if(store.state.target_tag != ""){
+        search_input.value = store.state.target_tag
+        search_tag()
+    }
 })
 
 
 // 点击搜索按钮，搜索tag
 const search_tag = () => {
+    if(search_input.value==""){
+        ElMessage.success("请输入")
+        return
+    }
+    
+    input_record.value.push(search_input.value)
 
     res_list.value.push({ title: "搜索结果", list: [], path: [] })
     for (let id in res_list.value[res_list.value.length - 2].list) {
@@ -117,7 +123,6 @@ const search_tag = () => {
             res_list.value[res_list.value.length - 1].path.push(path)
         }
     }
-    console.log(res_list.value)
     store.commit("set_list", res_list.value[res_list.value.length - 1])
 }
 
@@ -125,49 +130,14 @@ const search_tag = () => {
 // 搜索结果回退
 const search_back = () => {
     res_list.value.pop()
+    input_record.value.pop()
     store.commit("set_list", res_list.value[res_list.value.length - 1])
-}
 
-
-// 看最新图
-const go_image = () => {
-    const show_list = {
-        title: "第" + JSON.stringify(img_total.value) + "期",
-        list: [],
-        path: []
+    if(res_list.value.length==1){
+        router.push("home")
     }
-    show_list.list = image_urls.value[pack_name(img_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show")
 }
 
-const go_video = () => {
-    const show_list = {
-        title: "第" + JSON.stringify(vid_total.value) + "期",
-        list: [],
-        path: []
-    }
-    show_list.list = video_urls.value[pack_name(vid_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show")
-}
-
-const go_sticker = () => {
-    const show_list = {
-        title: "第" + JSON.stringify(stk_total.value) + "期",
-        list: [],
-        path: []
-    }
-    show_list.list = sticker_urls.value[pack_name(stk_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show")
-}
 
 
 

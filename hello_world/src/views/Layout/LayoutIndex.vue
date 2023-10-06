@@ -4,11 +4,7 @@
     <!-- <el-button style="z-index: 99;" type="danger" @click=test_button> test</el-button> -->
 
     <!-- 背景图x10 -->
-    <div class="bg-box">
-      <div class="bg-one" v-for="i in 10" :key="i">
-        <img class="bg-img" :src=bg_path alt="">
-      </div>
-    </div>
+    <div class="bg-box" :style="{ backgroundImage: `url(${bg_path})` }"></div>
 
     <!-- 左侧导航 -->
     <div class="navi-ctrl" v-if="store.state.setval.ishandy">
@@ -17,7 +13,7 @@
       </el-button>
     </div>
     <div class="body-navi" v-show="!store.state.setval.ishandy || show_navi">
-      <HomeNavi />
+      <LeftNavi />
     </div>
 
     <!-- 中间内容主体 -->
@@ -28,14 +24,14 @@
         <PageLoading />
       </div>
 
-      <el-scrollbar v-else :native="true" class="body-search">
+      <div v-else :native="true" class="body-search">
         <router-view />
-      </el-scrollbar>
+      </div>
 
       <!-- 右侧tag显示 -->
-      <el-scrollbar class="body-tag" v-if="store.state.setval.right_navi" :style="{ width: width_tag }">
-        <HomeTagBox />
-      </el-scrollbar>
+      <div class="body-tag" v-if="store.state.setval.right_navi" :style="{ width: width_tag }">
+        <RightTagBox />
+      </div>
 
     </div>
 
@@ -45,9 +41,9 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted, provide } from "vue";
 import type { Ref } from "vue"
-import HomeNavi from "./HomeNavi.vue"
-import HomeTagBox from "./HomeTagBox.vue"
-import PageLoading from "./PageLoading.vue"
+import LeftNavi from "./components/LeftNavi.vue"
+import RightTagBox from "./components/RightTagBox.vue"
+import PageLoading from "@/views/BodyLoading/LoadingIndex.vue"
 
 
 import { useStore } from "vuex";
@@ -152,7 +148,7 @@ onMounted(() => {
 
 // test按钮
 const test_button = () => {
-  console.log(video_urls.value)
+  console.log(bg_path)
 }
 </script>
 
@@ -160,29 +156,12 @@ const test_button = () => {
 /*  背景图片 */
 div.bg-box {
   position: absolute;
-  left: 0;
-  top: 0;
-  z-index: -1;
   height: 100%;
   width: 100%;
-  white-space: nowrap;
-
-
-  div.bg-one {
-    position: relative;
-    display: inline-block;
-    *display: inline;
-    height: 100%;
-    z-index: 0;
-  }
-
-  img.bg-img {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 100%;
-    opacity: 0.1;
-  }
+  background-repeat: repeat;
+  background-size: 400px;
+  z-index: -1;
+  opacity: 0.1;
 }
 
 div.home {
@@ -211,6 +190,9 @@ div.body-center {
   flex-direction: row;
   transition: 0.3s ease-in-out;
 
+  
+  
+
   // loading页
   div.body-loading {
     height: 100%;
@@ -219,16 +201,15 @@ div.body-center {
 
   // 中间搜索页
   div.body-search {
-    width: 100%
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
-  // 中间图片显示
-  div.body-main {
-    transition: 0.3s ease-out;
-  }
 
   // 右侧tag显示
   div.body-tag {
+    overflow: auto;
     transition: 0.3s ease-out;
   }
 }
@@ -245,4 +226,5 @@ div.body-center {
 body {
   overflow: hidden;
 }
+
 </style>

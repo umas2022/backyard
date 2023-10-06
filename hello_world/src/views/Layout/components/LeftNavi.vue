@@ -16,19 +16,6 @@
             </el-scrollbar>
         </div>
 
-        <!-- 左侧导航按钮:开发页 -->
-        <div class="home-box navi-box" v-if="store.state.setval.isdev">
-            <div class="home-icon navi-icon" @click="go_dev">
-                <img width="36" height="36" src="icon/toilet.svg" alt="icon">
-            </div>
-
-            <el-scrollbar style="height: calc(100% - 55px)">
-                <div class="navi-body">
-                    <h3>去开发页</h3>
-                </div>
-            </el-scrollbar>
-        </div>
-
         <!-- 左侧导航按钮:弔图列表 -->
         <div class="list-box navi-box">
             <div class="list-icon navi-icon">
@@ -139,19 +126,10 @@
                         <li>肉眼找不到tag可以ctrl+F直接搜网页</li>
                     </div>
                     <div class="navi-each">
-                        <li>直接搜索空字符串会返回所有表情包</li>
-                    </div>
-                    <div class="navi-each">
-                        <li>支持在结果中继续搜索，但目前好像有bug但懒得修了</li>
-                    </div>
-                    <div class="navi-each">
-                        <li>（没有做竖屏适配）</li>
-                    </div>
-                    <div class="navi-each">
                         <li>（超过一个月没更新的话可以去微信摇我一下）</li>
                     </div>
                     <div class="navi-each">
-                        <li>（↑摇不到的话大抵是人无了，欢迎来捡金币）</li>
+                        <li>（↑摇不到的话可能是人无了，欢迎来捡金币）</li>
                     </div>
                 </div>
             </el-scrollbar>
@@ -198,7 +176,7 @@ const vid_total = computed(() => Object.keys(video_urls.value).length)
 
 // 返回主页
 const go_home = () => {
-    router.push("search")
+    router.push("home")
 }
 
 // 去开发页
@@ -235,7 +213,7 @@ const change_img_group = (group: string, num: number) => {
     } else if (group == "video") {
         store.commit("set_list", set_show_list(group, vid_total.value + 1 - num, "第" + JSON.stringify(vid_total.value + 1 - num) + "期"))
     }
-    router.push("show")
+    router.push("show_one")
 }
 
 // 设置参数
