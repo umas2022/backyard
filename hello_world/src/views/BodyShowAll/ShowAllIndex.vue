@@ -169,6 +169,7 @@ div.img-each {
 div.rear-box {
     margin: 0 auto;
     text-align: center;
-    padding: 10px
+    padding: 10px;
+    margin-bottom: 100px;
 }
 </style>
