@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import HomeIndex from "../views/Layout/LayoutIndex.vue"
+import LayoutIndex from "../views/Layout/LayoutIndex.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeIndex,
+    component: LayoutIndex,
     children: [
       // loading加载
       {

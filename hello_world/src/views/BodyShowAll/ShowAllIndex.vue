@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <!-- 倒序展示所有图片，点击底部按钮连续载入图片 -->
+    <div class="show-all">
         <!-- <el-button type="danger" @click="display_center = true"> test1</el-button> -->
 
         <AnimateDown :display="display_center" :direction="direction_center">
@@ -62,6 +63,12 @@ const display_center: Ref<boolean> = ref(true)
 const direction_center: Ref<"right" | "left"> = ref("right")
 
 
+// 如果为空，返回主页（刷新页面的情况）
+onMounted(()=>{
+    if(store.state.show_list.list==undefined){
+        router.push("home")
+    }
+})
 
 
 

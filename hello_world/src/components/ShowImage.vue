@@ -11,7 +11,8 @@
         <!-- 编辑tag模式下显示tooltip -->
         <el-tooltip v-if="store.state.setval.edit_tag" effect="dark" :content="edit_mode ? '点击锁定tag修改' : '点击激活tag修改'"
             placement="top-start">
-            <video style="cursor: pointer;" @click="edit_mode = !edit_mode" v-if="url_type(props.path) == 'video'" controls>
+            <video ref="videoPlayer" style="cursor: pointer;" @click="edit_mode = !edit_mode"
+                v-if="url_type(props.path) == 'video'" controls>
                 <source :src="props.path" type="video/mp4">
                 <source :src="props.path" type="video/webm">
             </video>
@@ -22,7 +23,7 @@
 
         <!-- 一般状态显示 -->
         <div v-else>
-            <video v-if="url_type(props.path) == 'video'" controls>
+            <video  ref="videoPlayer" v-if="url_type(props.path) == 'video'" controls>
                 <source :src="props.path" type="video/mp4">
                 <source :src="props.path" type="video/webm">
             </video>
@@ -93,6 +94,14 @@ const props = defineProps<{
     path: string
 }>();
 const img_name = computed(() => props.path.split('/')[props.path.split('/').length - 1])
+
+
+// 翻页刷新video
+const videoPlayer = ref()
+watch(() => props.title, () => {
+    videoPlayer.value.load()
+})
+
 
 // 启用编辑模式
 const edit_mode = ref(false)
@@ -172,8 +181,10 @@ watch(() => store.state.tag_navi, () => {
 
 // 测试按钮
 const test_button = () => {
-    console.log(props.path)
-    console.log(img_name.value)
+    console.log(url_type(props.path))
+    if (url_type(props.path) == 'video') {
+        videoPlayer.value.load()
+    }
 }
 </script>
 

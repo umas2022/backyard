@@ -1,4 +1,5 @@
 <template>
+    <!-- 50一组分页展示图片 -->
     <div class="one-box">
         <!-- <el-button type="danger" @click="display_center = true"> test1</el-button> -->
 
@@ -43,6 +44,8 @@ import { defineProps, ref, watch, computed, inject, onMounted, onBeforeUnmount }
 import type { Ref } from "vue"
 import { useStore } from "vuex";
 const store = useStore();
+import { useRouter } from "vue-router";
+const router = useRouter();
 import { ElMessage } from 'element-plus'
 import AnimateDown from "@/components/AnimateDown.vue"
 import ShowImage from "@/components/ShowImage.vue"
@@ -71,6 +74,13 @@ const props = defineProps({
   },
 });
 
+// 如果为空，返回主页（刷新页面的情况）
+onMounted(()=>{
+    if(store.state.show_list.list==undefined){
+        router.push("home")
+    }
+})
+
 // 图片组格式化生成函数
 const set_show_list = (group: string, num: number, title: string) => {
     const show_list = {
@@ -84,6 +94,12 @@ const set_show_list = (group: string, num: number, title: string) => {
     } else if (group == "sticker") {
         show_list.list = sticker_urls.value[pack_name(num)]
         show_list.path = show_list.list
+    }
+    else if (group == "video") {
+        console.log(num)
+        show_list.list = video_urls.value[pack_name(num)]
+        show_list.path = show_list.list
+        console.log(show_list.list)
     }
     return show_list
 }
@@ -123,7 +139,7 @@ const page_next = () => {
     direction_center.value = "left"
     display_center.value = false
     setTimeout(() => {
-        store.commit("set_list", set_show_list(group, pack_num + 1, "第" + JSON.stringify(pack_num - 1) + "期"))
+        store.commit("set_list", set_show_list(group, pack_num + 1, "第" + JSON.stringify(pack_num + 1) + "期"))
     }, 500);
     setTimeout(() => {
         direction_center.value = "left"

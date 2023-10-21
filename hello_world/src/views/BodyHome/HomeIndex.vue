@@ -6,8 +6,8 @@
             <!-- <el-button type="danger" @click=test_button> test</el-button> -->
 
             <div class="img-box ">
-                <img v-if="store.state.setval.ishandy" class="shake-crazy" style="width: 60%;" src="static/home.jpg" alt="">
-                <img v-else class="shake-crazy" style="width: 30%;" src="static/home.jpg" alt="">
+                <img v-if="store.state.setval.ishandy" class="shake-crazy handy" src="static/home.jpg" alt="">
+                <img v-else class="shake-crazy window" src="static/home.jpg" alt="">
             </div>
             <div class="input-box">
 
@@ -80,13 +80,13 @@ const search_input = ref("")
 
 // 点击搜索按钮，搜索tag
 const search_tag = () => {
-    if(search_input.value==""){
+    if (search_input.value == "") {
         ElMessage.success("请输入")
         return
     }
     store.state.target_tag = search_input.value
     router.push("search_res")
-    
+
 }
 
 
@@ -165,6 +165,15 @@ div.search-box .img-box {
         padding: 5px;
         border: solid 3px black;
         border-radius: 5px;
+
+    }
+
+    img.window {
+        // transform: scale(0.3);
+        width: 30%;
+    }
+    img.handy{
+        width: 60%;
     }
 
 }
