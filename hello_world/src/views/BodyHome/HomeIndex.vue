@@ -92,43 +92,15 @@ const search_tag = () => {
 
 // 看最新图
 const go_image = () => {
-    const show_list = {
-        title: "全部图片",
-        list: [],
-        path: []
-    }
-    // 载入最新一组图片
-    show_list.list = image_urls.value[pack_name(img_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show_all")
+    router.push("show_all?input_group=image")
 }
 
 const go_video = () => {
-    const show_list = {
-        title: "全部视频",
-        list: [],
-        path: []
-    }
-    show_list.list = video_urls.value[pack_name(vid_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show_all")
+    router.push("show_all?input_group=video")
 }
 
 const go_sticker = () => {
-    const show_list = {
-        title: "全部表情",
-        list: [],
-        path: []
-    }
-    show_list.list = sticker_urls.value[pack_name(stk_total.value)]
-    show_list.path = show_list.list
-
-    store.commit("set_list", show_list)
-    router.push("show_all")
+    router.push("show_all?input_group=sticker")
 }
 
 

@@ -7,15 +7,15 @@
             <template #content>
 
                 <!-- 标题 -->
-                <h1 style="text-align: center;">{{ store.state.show_list.title }}</h1>
+                <h1 style="text-align: center;">{{ show_list.title }}</h1>
 
 
                 <!-- 图片显示 -->
-                <div class="img-each" v-for="(img_name, index) in store.state.show_list.list" :key="index"
+                <div class="img-each" v-for="(img_name, index) in show_list.list" :key="index"
                     :style="{ width: store.state.setval.pic_width + '%' }">
 
-                    <ShowImage :title="get_title(store.state.show_list.path[store.state.show_list.path.length - index - 1])"
-                        :path="store.state.show_list.path[store.state.show_list.path.length - index - 1]">
+                    <ShowImage :title="get_title(show_list.list[show_list.list.length - index - 1])"
+                        :path="show_list.list[show_list.list.length - index - 1]">
                     </ShowImage>
 
                 </div>
@@ -37,14 +37,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, watch, computed, inject, onMounted, onBeforeUnmount } from "vue";
+import { defineProps, ref, watch, computed, inject, onMounted, onBeforeUnmount,reactive } from "vue";
 import type { Ref } from "vue"
 import { useStore } from "vuex";
 const store = useStore();
 import { ElMessage } from 'element-plus'
 import AnimateDown from "@/components/AnimateDown.vue"
 import ShowImage from "@/components/ShowImage.vue"
-import { pack_name } from "@/utils/tools.js"
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -63,12 +62,58 @@ const display_center: Ref<boolean> = ref(true)
 const direction_center: Ref<"right" | "left"> = ref("right")
 
 
-// 如果为空，返回主页（刷新页面的情况）
-onMounted(()=>{
-    if(store.state.show_list.list==undefined){
-        router.push("home")
+// 当前组序号
+const current_num = ref(0)
+
+
+// 访问参数
+const input_group = ref("")
+const global_msg = ref("")
+
+// 外部二维码带参数访问
+// http://localhost:8080/#/show_all?input_group=image
+const page_refresh = () => {
+    if ('input_group' in router.currentRoute.value.query) {
+        input_group.value = (router.currentRoute.value.query.input_group as string)
     }
+    if (input_group.value == "") {
+        global_msg.value = "错误格式的查询字符串：" + JSON.stringify(router.currentRoute.value.query)
+    }
+    else {
+        build_show_list()
+    }
+}
+onMounted(() => {
+    page_refresh()
 })
+
+watch(() => router.currentRoute.value.query, () => {
+    page_refresh()
+})
+
+
+// 生成图片列表
+const show_list = reactive({
+    title: "",
+    list: [""]
+})
+const build_show_list = () => {
+    show_list.title = "所有图片"
+    if (input_group.value == "image") {
+        current_num.value = img_total.value
+        show_list.list = image_urls.value["pack" + JSON.stringify(img_total.value).padStart(4, "0")]
+    }
+    else if (input_group.value == "sticker") {
+        current_num.value = stk_total.value
+        show_list.list = sticker_urls.value["pack" + JSON.stringify(stk_total.value).padStart(4, "0")]
+    }
+    else if (input_group.value == "video") {
+        current_num.value = vid_total.value
+        show_list.list = video_urls.value["pack" + JSON.stringify(vid_total.value).padStart(4, "0")]
+    }
+}
+
+
 
 
 
@@ -86,25 +131,8 @@ const get_title = (url: string) => {
 }
 
 
-// 初始组序号
-// 如果没有载入图片列表，返回主页，不进行初始化
-const current_num = ref(0)
-onMounted(()=>{
-    if(store.state.show_list.list == undefined){
-        router.push("home")
-        return
-    }
 
-    if (store.state.show_list.list[0].includes("image")) {
-        current_num.value = img_total.value
-    }
-    else if (store.state.show_list.list[0].includes("video")) {
-        current_num.value = vid_total.value
-    } 
-    else if (store.state.show_list.list[0].includes("sticker")) {
-        current_num.value = stk_total.value
-    }
-})
+
 
 
 // 继续加载下一组图片
@@ -117,19 +145,15 @@ const load_next = () => {
     }
 
     // 载入最新一组图片
-    let show_list = store.state.show_list
     if (show_list.list[0].includes("image")) {
-        show_list.list.unshift(...image_urls.value[pack_name(current_num.value)])
+        show_list.list.unshift(...image_urls.value["pack" +JSON.stringify(current_num.value).padStart(4, "0")])
     }
     else if (show_list.list[0].includes("video")) {
-        show_list.list.unshift(...video_urls.value[pack_name(current_num.value)])
+        show_list.list.unshift(...video_urls.value["pack" + JSON.stringify(current_num.value).padStart(4, "0")])
     } 
     else if (show_list.list[0].includes("sticker")) {
-        show_list.list.unshift(...sticker_urls.value[pack_name(current_num.value)])
+        show_list.list.unshift(...sticker_urls.value["pack" + JSON.stringify(current_num.value).padStart(4, "0")])
     }
-
-    show_list.path = show_list.list
-
 }
 
 
@@ -138,8 +162,6 @@ const load_next = () => {
 // test按钮
 const test_button = () => {
     console.log("test")
-    display_center.value = !display_center.value
-    console.log(display_center.value)
 }
 
 </script>
