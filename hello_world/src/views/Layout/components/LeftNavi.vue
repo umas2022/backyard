@@ -53,7 +53,7 @@
                 <div class="navi-each">
                     编辑tag <br>
                     <el-switch v-model="store.state.setval.edit_tag"
-                        @click="store.state.setval.right_navi = store.state.setval.edit_tag" style="margin-left: 70px;">
+                        @click="setval_edit_tag()" style="margin-left: 70px;">
                     </el-switch> <br>
                 </div>
                 <div class="navi-each">
@@ -117,6 +117,7 @@ import { pack_name } from "@/utils/tools.js"
 
 import IconButton from "./IconButton.vue";
 import IconButtonSingle from "./IconButtonSingle.vue";
+import { ElMessage } from "element-plus";
 
 const image_urls: Ref<any> = inject("image_urls")!
 const sticker_urls: Ref<any> = inject("sticker_urls")!
@@ -134,36 +135,18 @@ const go_home = () => {
 
 
 
-// 图片组格式化生成函数
-const set_show_list = (group: string, num: number, title: string) => {
-    const show_list = {
-        title: title,
-        list: [],
-        path: []
-    }
-    if (group == "image") {
-        show_list.list = image_urls.value[pack_name(num)]
-        show_list.path = show_list.list
-    } else if (group == "sticker") {
-        show_list.list = sticker_urls.value[pack_name(num)]
-        show_list.path = show_list.list
-    } else if (group == "video") {
-        show_list.list = video_urls.value[pack_name(num)]
-        show_list.path = show_list.list
-    }
-    return show_list
-}
-
 // 切换图片组
 const change_img_group = (group: string, num: number) => {
+    let real_num = 0
     if (group == "image") {
-        store.commit("set_list", set_show_list(group, img_total.value + 1 - num, "第" + JSON.stringify(img_total.value + 1 - num) + "期"))
+        real_num = img_total.value + 1 - num
     } else if (group == "sticker") {
-        store.commit("set_list", set_show_list(group, stk_total.value + 1 - num, "第" + JSON.stringify(stk_total.value + 1 - num) + "期"))
+        real_num = stk_total.value + 1 - num
     } else if (group == "video") {
-        store.commit("set_list", set_show_list(group, vid_total.value + 1 - num, "第" + JSON.stringify(vid_total.value + 1 - num) + "期"))
+        real_num = vid_total.value + 1 - num
     }
-    router.push("show_one")
+    router.push("show_one?input_group=" + group + "&input_num=" + real_num)
+
 }
 
 // 设置参数
@@ -172,6 +155,13 @@ const slider_pic_width = () => {
     store.commit("set_set", { key: "pic_width", value: set_pic_width.value })
 }
 
+// 需要单独处理的设置项
+const setval_edit_tag=()=>{
+    store.state.setval.right_navi = store.state.setval.edit_tag
+    if(store.state.setval.edit_tag){
+        ElMessage.success("点击图片激活编辑状态")
+    }
+}
 
 
 

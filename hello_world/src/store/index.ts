@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    // 当前显示的图片列表
+    // 当前显示的图片列表 - 准备弃用
     show_list: {} as { [key: string]: any },
     // 搜索框输入的tag
     target_tag:"",

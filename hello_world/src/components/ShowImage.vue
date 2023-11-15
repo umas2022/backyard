@@ -18,6 +18,7 @@
             </video>
             <img style="cursor: pointer;" @click="edit_mode = !edit_mode" v-else-if="url_type(props.path) == 'image'"
                 :src="props.path">
+            <span v-else-if="props.path==''">loading</span>
             <span v-else> Video format is not supported: {{ props.path }}</span>
         </el-tooltip>
 
@@ -39,7 +40,6 @@
         </div>
 
         <!-- 编辑tag -->
-
         <div class="tag-box" v-else>
             <my-tag v-for="(tag, index) in get_tag_list_edit(img_name)" :key="index" :hover="false">
                 {{ tag }}
@@ -99,7 +99,9 @@ const img_name = computed(() => props.path.split('/')[props.path.split('/').leng
 // 翻页刷新video
 const videoPlayer = ref()
 watch(() => props.title, () => {
-    videoPlayer.value.load()
+    if(url_type(props.path) == 'video'){
+        videoPlayer.value.load()
+    }
 })
 
 
@@ -141,6 +143,7 @@ const handle_tag_del = (tag: string) => {
 const InputRef = ref<any>()
 const set_input = () => {
     input_mode.value = true
+    tag_new.value = ""
     nextTick(() => {
         InputRef.value!.input!.focus()
     })
@@ -176,15 +179,13 @@ const handle_tag_add = () => {
 // 由右侧快捷栏新增tag
 watch(() => store.state.tag_navi, () => {
     tag_new.value = store.state.tag_navi
+    console.log("tag_navi!!!")
 })
 
 
 // 测试按钮
 const test_button = () => {
     console.log(url_type(props.path))
-    if (url_type(props.path) == 'video') {
-        videoPlayer.value.load()
-    }
 }
 </script>
 

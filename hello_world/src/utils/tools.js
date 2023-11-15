@@ -5,21 +5,7 @@
 
 // import { bookmark_list } from "./bookmark.js"
 
-import { legal_image,legal_video } from "./const.js"
-
-/**
- * 序号转换为pack名：1 => pack0001
- * @param {number} num 
- * @returns 
- */
-export function pack_name(num) {
-    if(JSON.stringify(num).includes("pack")){
-        return num
-    }
-    const num_fill = JSON.stringify(num).padStart(4, "0")
-    return "pack" + num_fill
-}
-
+import { legal_image,legal_video } from "./const"
 
 /**
  * 图片名拆分tag
@@ -47,9 +33,11 @@ export function url_type(url){
     const extension = url.split('.').pop()
     if (legal_image.includes(extension)){
         return "image"
-    } else if(legal_video.includes(extension)){
+    } 
+    else if(legal_video.includes(extension)){
         return "video"
-    } else{
+    } 
+    else{
         return "none"
     }
 }

@@ -1,34 +1,37 @@
 <template>
     <!-- 50一组分页展示图片 -->
     <div class="one-box">
-        <!-- <el-button type="danger" @click="display_center = true"> test1</el-button> -->
+        <!-- <el-button type="danger" @click="test_button"> test1</el-button> -->
 
         <AnimateDown :display="display_center" :direction="direction_center">
             <template #content>
 
+                <!-- 报错信息 -->
+                <h1 style="text-align: center;" v-if="global_msg != ''">{{ global_msg }}</h1>
+
                 <!-- 标题 -->
-                <h1 style="text-align: center;">{{ store.state.show_list.title }}</h1>
+                <h1 style="text-align: center;">{{ show_list.title }}</h1>
 
                 <!-- 上一页/下一页 -->
-                <div class="rear-box" v-show="!props.hide_button">
+                <div class="rear-box">
                     <el-button @click=page_pre>上一页</el-button>
                     <el-button @click=page_next>下一页</el-button>
                 </div>
 
                 <!-- 图片显示 -->
-                <div class="img-each" v-for="(img_name, index) in store.state.show_list.list" :key="index"
+                <div class="img-each" v-for="(img_name, index) in show_list.list" :key="index"
                     :style="{ width: store.state.setval.pic_width + '%' }">
 
                     <ShowImage
-                        :title="'No.' + index + 1 + '(' + store.state.show_list.path[index].split('/')[store.state.show_list.path[index].split('/').length - 2] + '/' + store.state.show_list.path[index].split('/')[store.state.show_list.path[index].split('/').length - 1] + ')'"
-                        :path="store.state.show_list.path[index]">
+                        :title="'No.' + index + 1 + '(' + show_list.list[index].split('/')[show_list.list[index].split('/').length - 2] + '/' + show_list.list[index].split('/')[show_list.list[index].split('/').length - 1] + ')'"
+                        :path="show_list.list[index]">
                     </ShowImage>
 
                 </div>
 
                 <!-- 上一页/下一页 -->
-                <div class="rear-box" v-show="!props.hide_button">
-                    <h3 style="text-align: center;">{{ store.state.show_list.title }} end</h3>
+                <div class="rear-box">
+                    <h3 style="text-align: center;">{{ show_list.title }} end</h3>
                     <el-button @click=page_pre>上一页</el-button>
                     <el-button @click=page_next>下一页</el-button>
                 </div>
@@ -40,7 +43,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, watch, computed, inject, onMounted, onBeforeUnmount } from "vue";
+import { defineProps, ref, watch, computed, inject, onMounted, onBeforeUnmount, reactive } from "vue";
 import type { Ref } from "vue"
 import { useStore } from "vuex";
 const store = useStore();
@@ -49,7 +52,6 @@ const router = useRouter();
 import { ElMessage } from 'element-plus'
 import AnimateDown from "@/components/AnimateDown.vue"
 import ShowImage from "@/components/ShowImage.vue"
-import { pack_name } from "@/utils/tools.js"
 
 
 const image_urls: Ref<any> = inject("image_urls")!
@@ -65,52 +67,58 @@ const display_center: Ref<boolean> = ref(true)
 const direction_center: Ref<"right" | "left"> = ref("right")
 
 
-// 父组件传参
-const props = defineProps({
-  hide_button: {
-    type: Boolean,
-    default: false, // 设置默认值为 false
-    required: false, // 将属性设置为可选属性
-  },
-});
+// 访问参数
+const input_group = ref("")
+const input_num = ref("")
+const global_msg = ref("")
 
-// 如果为空，返回主页（刷新页面的情况）
-onMounted(()=>{
-    if(store.state.show_list.list==undefined){
-        router.push("home")
+// 外部二维码带参数访问
+// http://localhost:8080/#/show_one?input_group=image&input_num=10
+const page_refresh = () => {
+    if ('input_group' in router.currentRoute.value.query) {
+        input_group.value = (router.currentRoute.value.query.input_group as string)
     }
+    if ('input_num' in router.currentRoute.value.query) {
+        input_num.value = (router.currentRoute.value.query.input_num as string)
+    }
+    if (input_group.value == "" || input_num.value == "") {
+        global_msg.value = "错误格式的查询字符串：" + JSON.stringify(router.currentRoute.value.query)
+    }
+    else {
+        build_show_list()
+    }
+}
+onMounted(() => {
+    page_refresh()
 })
 
-// 图片组格式化生成函数
-const set_show_list = (group: string, num: number, title: string) => {
-    const show_list = {
-        title: title,
-        list: [],
-        path: []
+watch(() => router.currentRoute.value.query, () => {
+    page_refresh()
+})
+
+
+// 生成图片列表
+const show_list = reactive({
+    title: "",
+    list: [""]
+})
+const build_show_list = () => {
+    show_list.title = "第" + input_num.value + "期"
+    if (input_group.value == "image") {
+        show_list.list = image_urls.value["pack" + input_num.value.padStart(4, "0")]
     }
-    if (group == "image") {
-        show_list.list = image_urls.value[pack_name(num)]
-        show_list.path = show_list.list
-    } else if (group == "sticker") {
-        show_list.list = sticker_urls.value[pack_name(num)]
-        show_list.path = show_list.list
+    else if (input_group.value == "sticker") {
+        show_list.list = sticker_urls.value["pack" + input_num.value.padStart(4, "0")]
     }
-    else if (group == "video") {
-        console.log(num)
-        show_list.list = video_urls.value[pack_name(num)]
-        show_list.path = show_list.list
-        console.log(show_list.list)
+    else if (input_group.value == "video") {
+        show_list.list = video_urls.value["pack" + input_num.value.padStart(4, "0")]
     }
-    return show_list
 }
 
 
 // 下一页/上一页
 const page_pre = () => {
-    let group = store.state.show_list.path[0].split("/")[store.state.show_list.path[0].split("/").length - 3]
-    let pack_name = store.state.show_list.path[0].split("/")[store.state.show_list.path[0].split("/").length - 2]
-    let pack_num = parseInt(pack_name.replace("pack", ""))
-    if (pack_num == 1) {
+    if (Number(input_num.value) == 1) {
         ElMessage.success("到头啦!")
         return
     }
@@ -118,7 +126,7 @@ const page_pre = () => {
     direction_center.value = "right"
     display_center.value = false
     setTimeout(() => {
-        store.commit("set_list", set_show_list(group, pack_num - 1, "第" + JSON.stringify(pack_num - 1) + "期"))
+        router.push("show_one?input_group=" + input_group.value + "&input_num=" + (Number(input_num.value) - 1))
     }, 500);
     setTimeout(() => {
         direction_center.value = "right"
@@ -127,11 +135,8 @@ const page_pre = () => {
 }
 
 const page_next = () => {
-    let group = store.state.show_list.path[0].split("/")[store.state.show_list.path[0].split("/").length - 3]
-    let pack_name = store.state.show_list.path[0].split("/")[store.state.show_list.path[0].split("/").length - 2]
-    let pack_num = parseInt(pack_name.replace("pack", ""))
-    let max = group == "image" ? img_total.value : group == "sticker" ? stk_total.value : vid_total.value
-    if (pack_num == max) {
+    let max = input_group.value == "image" ? img_total.value : input_group.value == "sticker" ? stk_total.value : vid_total.value
+    if (Number(input_num.value) == max) {
         ElMessage.success("到头啦!")
         return
     }
@@ -139,7 +144,7 @@ const page_next = () => {
     direction_center.value = "left"
     display_center.value = false
     setTimeout(() => {
-        store.commit("set_list", set_show_list(group, pack_num + 1, "第" + JSON.stringify(pack_num + 1) + "期"))
+        router.push("show_one?input_group=" + input_group.value + "&input_num=" + (Number(input_num.value) + 1))
     }, 500);
     setTimeout(() => {
         direction_center.value = "left"
@@ -172,17 +177,15 @@ onBeforeUnmount(() => {
 // test按钮
 const test_button = () => {
     console.log("test")
-    display_center.value = !display_center.value
-    console.log(display_center.value)
+    console.log(input_num.value)
+    console.log(router.currentRoute.value.query)
+
 }
 
 </script>
 
 
 <style lang="scss" scoped>
-
-
-
 div.img-box {
     text-align: center;
     width: 100%;
